@@ -1,13 +1,23 @@
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useInfiniteQuery} from 'react-query';
-import {fetchTours} from '../api/fetchTours';
+import {fetchTours, Tour} from '../api/fetchTours';
+import {MarketPlaceNavigationParamsList} from '../navigation/MarketPlaceNavigation';
+import {RootNavigationParamsList} from '../navigation/RootNavigation';
 import {TourItem} from './TourItem';
+
+type MarketPlaceProps = CompositeScreenProps<
+  NativeStackScreenProps<MarketPlaceNavigationParamsList, 'MarketPlace'>,
+  BottomTabScreenProps<RootNavigationParamsList>
+>;
 
 const itemsPerFetch = 20;
 
-export const MarketPlace = (): JSX.Element => {
+export const MarketPlace = ({navigation}: MarketPlaceProps): JSX.Element => {
   const {data, isLoading, isError, fetchNextPage, isFetchingNextPage} =
     useInfiniteQuery(
       'tours',
@@ -34,8 +44,13 @@ export const MarketPlace = (): JSX.Element => {
     );
   }
 
+  const onPress = (tour: Tour) => {
+    navigation.navigate('Details', {tour});
+  };
+
   return (
     <FlatList
+      contentContainerStyle={styles.contentContainer}
       ListFooterComponent={
         isFetchingNextPage ? (
           <Text style={[styles.loadingMoreText, styles.defaultText]}>
@@ -44,7 +59,7 @@ export const MarketPlace = (): JSX.Element => {
         ) : null
       }
       data={data?.pages.flat()}
-      renderItem={({item}) => <TourItem tour={item} />}
+      renderItem={({item}) => <TourItem tour={item} onPress={onPress} />}
       keyExtractor={item => item.id.toString()}
       onEndReached={() => {
         if (!isFetchingNextPage) {
@@ -73,5 +88,8 @@ const styles = StyleSheet.create({
   loadingMoreText: {
     textAlign: 'center',
     paddingBottom: 8,
+  },
+  contentContainer: {
+    paddingTop: 16,
   },
 });
