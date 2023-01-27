@@ -1,9 +1,10 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FlashList} from '@shopify/flash-list';
 import React from 'react';
 
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useInfiniteQuery} from 'react-query';
 import {fetchTours, Tour} from '../api/fetchTours';
 import {MarketPlaceNavigationParamsList} from '../navigation/MarketPlaceNavigation';
@@ -49,7 +50,7 @@ export const MarketPlace = ({navigation}: MarketPlaceProps): JSX.Element => {
   };
 
   return (
-    <FlatList
+    <FlashList
       contentContainerStyle={styles.contentContainer}
       ListFooterComponent={
         isFetchingNextPage ? (
@@ -59,6 +60,7 @@ export const MarketPlace = ({navigation}: MarketPlaceProps): JSX.Element => {
         ) : null
       }
       data={data?.pages.flat()}
+      estimatedItemSize={104}
       renderItem={({item}) => <TourItem tour={item} onPress={onPress} />}
       keyExtractor={item => item.id.toString()}
       onEndReached={() => {

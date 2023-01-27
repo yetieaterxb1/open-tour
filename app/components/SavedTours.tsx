@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {useSelector} from 'react-redux';
-import {FlatList, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -12,6 +12,7 @@ import type {SavedToursNavigationParamsList} from '../navigation/SavedToursNavig
 import type {RootNavigationParamsList} from '../navigation/RootNavigation';
 import type {Tour} from '../api/fetchTours';
 import type {RootState} from '../redux/store';
+import {FlashList} from '@shopify/flash-list';
 
 type SavedToursProps = CompositeScreenProps<
   NativeStackScreenProps<SavedToursNavigationParamsList, 'SavedTours'>,
@@ -26,8 +27,9 @@ export const SavedTours = ({navigation}: SavedToursProps): JSX.Element => {
   };
 
   return (
-    <FlatList
+    <FlashList
       contentContainerStyle={styles.contentContainer}
+      estimatedItemSize={104}
       data={savedTours}
       renderItem={({item}) => <TourItem tour={item} onPress={onPress} />}
       keyExtractor={item => item.id.toString()}
