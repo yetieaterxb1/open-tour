@@ -1,11 +1,11 @@
-type TourDate = {
+export type TourDate = {
   date: string;
   end_time: string;
   start_time: string;
   time_zone: string;
 };
 
-type TourLocation = {
+export type TourLocation = {
   city: string;
   state: string | null;
   street_address: string;
