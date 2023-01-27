@@ -1,54 +1,63 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+
 import type {Tour} from '../api/fetchTours';
+import {getLocation} from '../utils/getLocation';
 
 type TourProps = {
   tour: Tour;
+  onPress: (tour: Tour) => void;
 };
 
-export const TourItem = ({tour}: TourProps): JSX.Element => {
-  // const isDarkMode = useColorScheme() === 'dark';
-
+export const TourItem = ({tour, onPress}: TourProps): JSX.Element => {
   return (
-    <Pressable onPress={() => console.log(tour.id)}>
-      <View style={styles.post}>
-        {tour.location && (
-          <Text style={[styles.postTitle]}>{tour.location.city}</Text>
-        )}
-        <Text style={[styles.postTitle]}>{tour.price}</Text>
-        <Text style={[styles.postTitle]}>{tour.company_name}</Text>
+    <Pressable onPress={() => onPress(tour)}>
+      <View style={styles.card}>
+        <Image source={{uri: tour.logo}} style={styles.logo} />
+        <View style={styles.infoColumn}>
+          <Text style={styles.location}>{getLocation(tour.location)}</Text>
+          <Text style={styles.date}>{`${tour.date_time.date}`}</Text>
+        </View>
+        <View style={styles.priceContainer}>
+          <Text style={styles.price}>{tour.price}</Text>
+        </View>
       </View>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  card: {
     backgroundColor: '#fff',
-    padding: 10,
+    marginHorizontal: 8,
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 16,
+    flexDirection: 'row',
+    height: 88,
   },
-  wrapper: {
+  location: {
+    fontWeight: '600',
+  },
+  date: {
+    color: '#808080',
+  },
+  infoColumn: {
+    justifyContent: 'space-around',
+    paddingLeft: 8,
     flex: 1,
-    paddingVertical: 30,
   },
-  item: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  price: {
+    fontWeight: '600',
+    fontSize: 12,
   },
-  header: {
-    textAlign: 'center',
-    textTransform: 'capitalize',
-    fontWeight: 'bold',
-    fontSize: 30,
-    color: '#202c41',
-    paddingVertical: 10,
+  priceContainer: {
+    alignSelf: 'center',
+    borderRadius: 24,
+    borderColor: '#80808080',
+    borderWidth: 1,
+    padding: 4,
   },
-  post: {
-    backgroundColor: '#202c41',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  postTitle: {color: '#fff', textTransform: 'capitalize'},
+  logo: {height: 56, width: 56},
 });
